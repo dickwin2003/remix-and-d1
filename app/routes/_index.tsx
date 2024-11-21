@@ -10,24 +10,23 @@ interface Env {
   DB: D1Database;
 }
 
-interface EmployeeRow {
-  EmployeeID: number;
-  LastName: string;
-  FirstName: string;
-  Title: string;
-  BirthDate: string;
-  HireDate: string;
-  City: string;
-  Country: string;
+interface UserRow {
+  user_id: number;
+  email_address: string;
+  created_at: number;
+  deleted: number;
+  settings: string;
 }
 
-const QUERY = "SELECT EmployeeID, LastName, FirstName, Title, BirthDate, HireDate, City, Country FROM Employees LIMIT 20;";
+const USER_QUERY = "SELECT * FROM users ORDER BY created_at DESC LIMIT 20;";
 
+// Infer the type our data based on the return type of our loader function.
+// Ref: https://jfranciscosousa.com/blog/typing-remix-loaders-with-confidence
 type LoaderData = Awaited<ReturnType<typeof loader>>;
 
 export const loader = async ({ context, params }: LoaderArgs) => {
   let env = context.env as Env;
-  return await env.DB.prepare(QUERY).all();
+  return await env.DB.prepare(USER_QUERY).all();
 };
 
 export default function Index() {
@@ -36,7 +35,7 @@ export default function Index() {
     <div className="container mx-auto">
       <div className="flex flex-col py-8 justify-center items-center">
         <h1 className="text-orange-500 font-extrabold text-4xl max-w-md">
-          Remix x Cloudflare D1 - Northwind Database
+          Remix x Cloudflare D1
         </h1>
         <div className="py-4">
           <h2 className="font-extrabold text-2xl py-4 text-blue-800">Docs</h2>
@@ -60,34 +59,38 @@ export default function Index() {
         </div>
         <div className="inline-block max-w-full overflow-scroll px-4 justify-center items-center">
           <h2 className="font-extrabold text-2xl py-4 text-blue-800">
-            Employees
+            Query Results
           </h2>
-          <pre className="text-mono text-sm my-1">Executed: {QUERY}</pre>
+          <pre className="text-mono text-sm my-1">Executed: {USER_QUERY}</pre>
           <div className="py-2 md-px-8 whitespace-nowrap">
             <table className="rounded-xl border-collapse text-sm md:text-md font-light">
               <thead className="border-b dark:border-neutral-500 bg-slate-200">
                 <tr className="font-bold text-left break-words">
-                  <th scope="col" className="px-6 py-4">ID</th>
-                  <th scope="col" className="px-6 py-4">Last Name</th>
-                  <th scope="col" className="px-6 py-4">First Name</th>
-                  <th scope="col" className="px-6 py-4">Title</th>
-                  <th scope="col" className="px-6 py-4">Birth Date</th>
-                  <th scope="col" className="px-6 py-4">Hire Date</th>
-                  <th scope="col" className="px-6 py-4">City</th>
-                  <th scope="col" className="px-6 py-4">Country</th>
+                  <th scope="col" className="px-6 py-4">
+                    User ID
+                  </th>
+                  <th scope="col" className="px-6 py-4">
+                    Email Address
+                  </th>
+                  <th scope="col" className="px-6 py-4">
+                    Created at
+                  </th>
+                  <th scope="col" className="px-6 py-4">
+                    Deleted?
+                  </th>
+                  <th scope="col" className="px-6 py-4">
+                    Settings
+                  </th>
                 </tr>
               </thead>
               <tbody>
-                {results.map((row: EmployeeRow) => (
-                  <tr key={row.EmployeeID} className="border-b dark:border-neutral-500">
-                    <td className="whitespace-nowrap px-6 py-4">{row.EmployeeID}</td>
-                    <td className="whitespace-nowrap px-6 py-4">{row.LastName}</td>
-                    <td className="whitespace-nowrap px-6 py-4">{row.FirstName}</td>
-                    <td className="whitespace-nowrap px-6 py-4">{row.Title}</td>
-                    <td className="whitespace-nowrap px-6 py-4">{row.BirthDate}</td>
-                    <td className="whitespace-nowrap px-6 py-4">{row.HireDate}</td>
-                    <td className="whitespace-nowrap px-6 py-4">{row.City}</td>
-                    <td className="whitespace-nowrap px-6 py-4">{row.Country}</td>
+                {results.map((row, idx) => (
+                  <tr key={idx} className="border-b dark:border-neutral-500">
+                    {Object.entries(row).map(([key, value]) => (
+                      <td key={key} className="whitespace-nowrap px-6 py-4">
+                        {value}
+                      </td>
+                    ))}
                   </tr>
                 ))}
               </tbody>
