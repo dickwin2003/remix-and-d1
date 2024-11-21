@@ -13,21 +13,29 @@ interface Env {
 interface UserRow {
   user_id: number;
   email_address: string;
-  created_at: number;
-  deleted: number;
-  settings: string;
+  created_at: number | null;
+  deleted: number | null;
+  settings: string | null;
 }
 
-const USER_QUERY = "SELECT * FROM users ORDER BY created_at DESC LIMIT 20;";
+const USER_QUERY = "SELECT * FROM users ORDER BY user_id ASC;";
 
-// Infer the type our data based on the return type of our loader function.
-// Ref: https://jfranciscosousa.com/blog/typing-remix-loaders-with-confidence
 type LoaderData = Awaited<ReturnType<typeof loader>>;
 
 export const loader = async ({ context, params }: LoaderArgs) => {
   let env = context.env as Env;
   return await env.DB.prepare(USER_QUERY).all();
 };
+
+function formatTimestamp(timestamp: number | null): string {
+  if (timestamp === null) return 'N/A';
+  return new Date(timestamp * 1000).toLocaleString();
+}
+
+function formatDeleted(deleted: number | null): string {
+  if (deleted === null) return 'N/A';
+  return deleted === 1 ? 'Yes' : 'No';
+}
 
 export default function Index() {
   const { results, meta } = useLoaderData<LoaderData>();
@@ -59,38 +67,28 @@ export default function Index() {
         </div>
         <div className="inline-block max-w-full overflow-scroll px-4 justify-center items-center">
           <h2 className="font-extrabold text-2xl py-4 text-blue-800">
-            Query Results
+            Users ({results.length})
           </h2>
           <pre className="text-mono text-sm my-1">Executed: {USER_QUERY}</pre>
           <div className="py-2 md-px-8 whitespace-nowrap">
             <table className="rounded-xl border-collapse text-sm md:text-md font-light">
               <thead className="border-b dark:border-neutral-500 bg-slate-200">
                 <tr className="font-bold text-left break-words">
-                  <th scope="col" className="px-6 py-4">
-                    User ID
-                  </th>
-                  <th scope="col" className="px-6 py-4">
-                    Email Address
-                  </th>
-                  <th scope="col" className="px-6 py-4">
-                    Created at
-                  </th>
-                  <th scope="col" className="px-6 py-4">
-                    Deleted?
-                  </th>
-                  <th scope="col" className="px-6 py-4">
-                    Settings
-                  </th>
+                  <th scope="col" className="px-6 py-4">User ID</th>
+                  <th scope="col" className="px-6 py-4">Email Address</th>
+                  <th scope="col" className="px-6 py-4">Created At</th>
+                  <th scope="col" className="px-6 py-4">Deleted</th>
+                  <th scope="col" className="px-6 py-4">Settings</th>
                 </tr>
               </thead>
               <tbody>
-                {results.map((row, idx) => (
-                  <tr key={idx} className="border-b dark:border-neutral-500">
-                    {Object.entries(row).map(([key, value]) => (
-                      <td key={key} className="whitespace-nowrap px-6 py-4">
-                        {value}
-                      </td>
-                    ))}
+                {results.map((row: UserRow) => (
+                  <tr key={row.user_id} className="border-b dark:border-neutral-500">
+                    <td className="whitespace-nowrap px-6 py-4">{row.user_id}</td>
+                    <td className="whitespace-nowrap px-6 py-4">{row.email_address}</td>
+                    <td className="whitespace-nowrap px-6 py-4">{formatTimestamp(row.created_at)}</td>
+                    <td className="whitespace-nowrap px-6 py-4">{formatDeleted(row.deleted)}</td>
+                    <td className="whitespace-nowrap px-6 py-4">{row.settings || 'N/A'}</td>
                   </tr>
                 ))}
               </tbody>
