@@ -1,6 +1,6 @@
 [[d1_databases]]
 binding = "DB"
-database_name = "db-enam"
-database_id = "c89db32e-83f4-4e62-8cd7-7c8f97659029"
+database_name = "remix-and-d1"
+database_id = "bf7fef50-9482-4c6f-88d5-8ce0cea5182a"
 preview_database_id = "DB" # Required for Pages local development
 
