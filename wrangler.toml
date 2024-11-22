@@ -2,5 +2,8 @@
 binding = "DB"
 database_name = "remix-and-d1"
 database_id = "bf7fef50-9482-4c6f-88d5-8ce0cea5182a"
-preview_database_id = "bf7fef50-9482-4c6f-88d5-8ce0cea5182a" # Required for Pages local development
-pages_build_output_dir = "public"
+preview_database_id = "bf7fef50-9482-4c6f-88d5-8ce0cea5182a"
+
+[site]
+bucket = "./public"
+pages_build_output_dir = "./public"
