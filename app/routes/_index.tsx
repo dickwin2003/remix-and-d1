@@ -35,8 +35,8 @@ export default function Index() {
   const { results, meta } = useLoaderData<typeof loader>();
   return (
     <div className="container mx-auto">
-      <div className="flex flex-col py-8 justify-center items-center">
-        <h1 className="text-orange-500 font-extrabold text-4xl max-w-md">
+      <div className="flex flex-col py-8 items-start px-4">
+        <h1 className="text-orange-500 font-extrabold text-4xl">
           Remix x Cloudflare D1
         </h1>
         <div className="py-4">
@@ -59,12 +59,12 @@ export default function Index() {
             </li>
           </ul>
         </div>
-        <div className="inline-block max-w-full overflow-scroll px-4 justify-center items-center">
+        <div className="w-full">
           <h2 className="font-extrabold text-2xl py-4 text-blue-800">
             Users ({results.length})
           </h2>
           <pre className="text-mono text-sm my-1">Executed: {USER_QUERY}</pre>
-          <div className="py-2 md-px-8 whitespace-nowrap">
+          <div className="py-2 md-px-8 whitespace-nowrap overflow-x-auto">
             <table className="rounded-xl border-collapse text-sm md:text-md font-light">
               <thead className="border-b dark:border-neutral-500 bg-slate-200">
                 <tr className="font-bold text-left break-words">
