@@ -86,8 +86,8 @@ export default function Index() {
                   <tr key={row.user_id} className="border-b dark:border-neutral-500">
                     <td className="whitespace-nowrap px-6 py-4">{row.user_id}</td>
                     <td className="whitespace-nowrap px-6 py-4">{row.email_address}</td>
-                    <td className="whitespace-nowrap px-6 py-4">{formatTimestamp(row.created_at)}</td>
-                    <td className="whitespace-nowrap px-6 py-4">{formatDeleted(row.deleted)}</td>
+                    <td className="whitespace-nowrap px-6 py-4">{row.created_at}</td>
+                    <td className="whitespace-nowrap px-6 py-4">{row.deleted}</td>
                     <td className="whitespace-nowrap px-6 py-4">{row.settings || 'N/A'}</td>
                   </tr>
                 ))}
